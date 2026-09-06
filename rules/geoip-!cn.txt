@@ -1,0 +1,2 @@
+https://raw.githubusercontent.com/jackszb/telegram/main/telegramip.json
+https://raw.githubusercontent.com/jackszb/google-ip-monitor/main/output/google-ip-rules.json
