@@ -1,0 +1,122 @@
+name: Cleanup Workflow Runs
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+    inputs:
+      keep:
+        description: '整个仓库保留的最近记录总数'
+        required: false
+        default: '10'
+      days:
+        description: '删除多少天前的记录 (留空则不按天数清理)'
+        required: false
+        default: '90'
+      dry_run:
+        description: '是否只是预览而不实际删除 (true/false)'
+        required: false
+        default: 'false'
+
+permissions:
+  actions: write
+  contents: read
+
+env:
+  KEEP: ${{ github.event.inputs.keep || '10' }}
+  DAYS: ${{ github.event.inputs.days || '90' }}
+  DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete old workflow runs
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -uo pipefail
+          REPO="${{ github.repository }}"
+          KEEP="${{ env.KEEP }}"
+          DAYS="${{ env.DAYS }}"
+          DRY_RUN="${{ env.DRY_RUN }}"
+
+          echo "仓库: $REPO | 整个仓库保留: $KEEP 条 | 天数阈值: $DAYS 天 | dry_run: $DRY_RUN"
+
+          gh_api_retry() {
+            local max_attempts=5
+            local attempt=1
+            local wait=2
+            local output
+            while [[ $attempt -le $max_attempts ]]; do
+              if output=$(gh api "$@" 2>&1); then
+                echo "$output"
+                return 0
+              fi
+              if echo "$output" | grep -qiE "rate limit|abuse|secondary"; then
+                echo "    [限流] 第 $attempt 次调用被限流，等待 ${wait}s 后重试..." >&2
+              else
+                echo "    [警告] 第 $attempt 次调用失败: $(echo "$output" | head -n1)，等待 ${wait}s 后重试..." >&2
+              fi
+              sleep "$wait"
+              wait=$((wait * 2))
+              attempt=$((attempt + 1))
+            done
+            echo "    [失败] 已重试 $max_attempts 次仍失败，跳过此次调用: $*" >&2
+            return 1
+          }
+
+          CUTOFF_EPOCH=""
+          if [[ -n "$DAYS" ]]; then
+            CUTOFF_EPOCH=$(date -u -d "-${DAYS} days" +%s)
+          fi
+
+          RUNS_JSON=$(gh_api_retry "repos/$REPO/actions/runs" \
+            --paginate --jq '.workflow_runs[] | {id, created_at}' | jq -s '.') \
+            || { echo "获取运行记录失败，退出。"; exit 1; }
+
+          RUN_COUNT=$(jq 'length' <<<"$RUNS_JSON")
+          echo "仓库全部运行记录: $RUN_COUNT 条"
+
+          TOTAL_DELETED=0
+          TOTAL_FAILED=0
+          KEPT=0
+
+          for i in $(seq 0 $((RUN_COUNT - 1))); do
+            RUN=$(jq -c ".[$i]" <<<"$RUNS_JSON")
+            RUN_ID=$(jq -r '.id' <<<"$RUN")
+            RUN_CREATED=$(jq -r '.created_at' <<<"$RUN")
+
+            SHOULD_DELETE=false
+            if [[ $KEPT -ge $KEEP ]]; then
+              SHOULD_DELETE=true
+            fi
+            if [[ -n "$CUTOFF_EPOCH" ]]; then
+              RUN_EPOCH=$(date -u -d "$RUN_CREATED" +%s)
+              if [[ "$RUN_EPOCH" -lt "$CUTOFF_EPOCH" ]]; then
+                SHOULD_DELETE=true
+              fi
+            fi
+
+            if $SHOULD_DELETE; then
+              if [[ "$DRY_RUN" == "true" ]]; then
+                echo "[DRY RUN] 将删除 run id: $RUN_ID (created: $RUN_CREATED)"
+              else
+                if gh_api_retry -X DELETE "repos/$REPO/actions/runs/$RUN_ID" >/dev/null; then
+                  echo "已删除 run id: $RUN_ID"
+                  TOTAL_DELETED=$((TOTAL_DELETED + 1))
+                else
+                  echo "删除失败 run id: $RUN_ID (可能正在运行中，或多次重试后仍被限流)"
+                  TOTAL_FAILED=$((TOTAL_FAILED + 1))
+                fi
+                sleep 0.6
+              fi
+            else
+              KEPT=$((KEPT + 1))
+            fi
+          done
+
+          echo ""
+          echo "-----------------------------------"
+          echo "完成。共删除 $TOTAL_DELETED 条记录，保留 $KEPT 条，失败/跳过 $TOTAL_FAILED 条。"
+          exit 0
