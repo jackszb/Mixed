@@ -2,3 +2,4 @@ https://raw.githubusercontent.com/SukkaLab/ruleset.skk.moe/master/sing-box/domai
 https://raw.githubusercontent.com/SukkaLab/ruleset.skk.moe/master/sing-box/non_ip/reject.json
 https://raw.githubusercontent.com/SukkaLab/ruleset.skk.moe/master/sing-box/non_ip/reject-drop.json
 https://raw.githubusercontent.com/SukkaLab/ruleset.skk.moe/master/sing-box/non_ip/reject-no-drop.json
+https://raw.githubusercontent.com/jackszb/v2/main/rules3/v2fly-ads.json
