@@ -1,5 +1,2 @@
-https://raw.githubusercontent.com/SukkaLab/ruleset.skk.moe/master/sing-box/domainset/cdn.json
-https://raw.githubusercontent.com/SukkaLab/ruleset.skk.moe/master/sing-box/non_ip/apple_intelligence.json
-https://raw.githubusercontent.com/SukkaLab/ruleset.skk.moe/master/sing-box/non_ip/global.json
-https://raw.githubusercontent.com/SukkaLab/ruleset.skk.moe/master/sing-box/non_ip/ai.json
-https://raw.githubusercontent.com/SukkaLab/ruleset.skk.moe/master/sing-box/non_ip/stream.json
+https://raw.githubusercontent.com/jackszb/v2/main/rules4/apple-!cn.json
+https://raw.githubusercontent.com/jackszb/v2/main/rules2/v2fly-!cn.json
