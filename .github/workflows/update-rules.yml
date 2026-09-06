@@ -1,0 +1,49 @@
+name: Update Rules and Compile SRS
+
+on:
+  schedule:
+    - cron: '0 16 * * *'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+
+      - name: Install Python dependencies
+        run: pip install google-re2
+
+      - name: Install sing-box
+        run: |
+          sudo mkdir -p /etc/apt/keyrings
+          sudo curl -fsSL https://sing-box.app/gpg.key -o /etc/apt/keyrings/sagernet.asc
+          sudo chmod a+r /etc/apt/keyrings/sagernet.asc
+          {
+            echo "Types: deb"
+            echo "URIs: https://deb.sagernet.org/"
+            echo "Suites: *"
+            echo "Components: *"
+            echo "Enabled: yes"
+            echo "Signed-By: /etc/apt/keyrings/sagernet.asc"
+          } | sudo tee /etc/apt/sources.list.d/sagernet.sources
+          sudo apt-get update
+          sudo apt-get install -y sing-box
+
+      - name: Run script
+        run: python merge_and_compile.py
+
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add "geosite-cn.json" "geosite-cn.srs" "geosite-!cn.json" "geosite-!cn.srs" "geosite-ad.json" "geosite-ad.srs" "geoip-cn.json" "geoip-cn.srs" "geoip-!cn.json" "geoip-!cn.srs"
+          git commit -m "Auto-update: merged JSON + compiled SRS" || echo "No changes to commit"
+          git push
