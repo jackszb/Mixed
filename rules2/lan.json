@@ -1,0 +1,23 @@
+{
+  "version": 5,
+  "rules": [
+    {
+      "domain_suffix": [
+        "lan",
+        "local",
+        "internal",
+        "home",
+        "corp",
+        "localdomain",
+        "intranet",
+        "private",
+        "localhost",
+        "home.arpa",
+        "in-addr.arpa",
+        "ip6.arpa",
+        "router.asus.com",
+        "asusrouter.com"
+      ]
+    }
+  ]
+}
