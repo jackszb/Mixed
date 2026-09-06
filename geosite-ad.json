@@ -136728,6 +136728,9 @@
         "wxsnsdy",
         "zymerget"
       ],
+      "domain_regex": [
+        "^speed\\.(coe|open)\\.ad\\.[a-z]{2,6}\\.prod\\.hosts\\.ooklaserver\\.net$"
+      ],
       "ip_cidr": [
         "39.97.128.148/32",
         "39.97.130.51/32",
