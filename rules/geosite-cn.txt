@@ -1,4 +1,4 @@
 https://raw.githubusercontent.com/jackszb/Mixed/main/rules2/lan.json
-https://raw.githubusercontent.com/jackszb/v2/main/rules4/apple-cn.json
+https://raw.githubusercontent.com/jackszb/rules/main/domestic.json
 https://raw.githubusercontent.com/jackszb/v2/main/rules/v2fly-cn.json
 https://raw.githubusercontent.com/jackszb/Mixed/main/rules2/domain_regex-cn.json
