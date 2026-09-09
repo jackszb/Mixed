@@ -23,3 +23,4 @@ https://raw.githubusercontent.com/jackszb/rules/main/whatsapp.json
 https://raw.githubusercontent.com/jackszb/rules/main/wikipedia.json
 https://raw.githubusercontent.com/jackszb/rules/main/yahoo.json
 https://raw.githubusercontent.com/jackszb/rules/main/zoom.json
+https://raw.githubusercontent.com/jackszb/sukka-json/main/non_ip/apple_intelligence.json
