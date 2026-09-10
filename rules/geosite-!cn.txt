@@ -1,2 +1,1 @@
-https://raw.githubusercontent.com/jackszb/Mixed/main/rules2/global.json
-https://raw.githubusercontent.com/jackszb/sukka-json/main/non_ip/apple_intelligence.json
+https://raw.githubusercontent.com/jackszb/v2/main/rules2/v2fly-!cn.json
