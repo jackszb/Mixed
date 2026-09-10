@@ -1,8 +1,4 @@
 https://raw.githubusercontent.com/TG-Twilight/AWAvenue-Ads-Rule/main/Filters/AWAvenue-Ads-Rule-Singbox-Only.Ads.json
 https://raw.githubusercontent.com/jackszb/v2/main/rules3/v2fly-ads.json
 https://raw.githubusercontent.com/jackszb/hagezi/main/rules/pro.plus.json
-https://raw.githubusercontent.com/SukkaLab/ruleset.skk.moe/master/sing-box/domainset/reject.json
-https://raw.githubusercontent.com/SukkaLab/ruleset.skk.moe/master/sing-box/non_ip/reject.json
-https://raw.githubusercontent.com/SukkaLab/ruleset.skk.moe/master/sing-box/non_ip/reject-drop.json
-https://raw.githubusercontent.com/SukkaLab/ruleset.skk.moe/master/sing-box/non_ip/reject-no-drop.json
 https://raw.githubusercontent.com/jackszb/Mixed/main/rules2/domain_regex-ad.json
